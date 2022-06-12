@@ -90,7 +90,7 @@
 			<plugin>
 				<groupId>com.github.kongchen</groupId>
 				<artifactId>swagger-maven-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.1.8</version>
 				<configuration>
 					<apiSources>
 						<apiSource>
@@ -98,11 +98,15 @@
 							<locations>
 								<location>com.Atef.gestionstock.controller</location>
 							</locations>
-							<basePath>http://localhost:8081</basePath>
+							<basePath>/http://localhost:8081</basePath>
 							<info>
 								<title>Swagger Api Documentation for Gestion de Stock application </title>
 								<version>${project.version}</version>
 								<description>Swagger Api documentationfor gestion de stock application </description>
+								<contact>
+									<email>atefzaghdoud25@gmail.com</email>
+									<name>Atef Zaghdoud</name>
+								</contact>
 							</info>
 							<outputPath>${project.build.directory}</outputPath>
 							<outputFormats>json</outputFormats>
