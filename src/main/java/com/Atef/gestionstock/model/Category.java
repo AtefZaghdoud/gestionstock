@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true )
 @Entity
 @Table(name="Category")
-public class Category extends AbstractEntity {
+public class  Category extends AbstractEntity {
 
 	@Column(name ="code")
 	private String code;
