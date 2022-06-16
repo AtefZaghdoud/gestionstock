@@ -2,11 +2,13 @@ package com.Atef.gestionstock.dto;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.Atef.gestionstock.model.Utilisateur;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
 @Data
@@ -48,7 +50,8 @@ public class UtilisateurDto {
 				.nom(utilisateur.getNom())
 				.prenom(utilisateur.getPrenom())
 				.photo(utilisateur.getPhoto())
-			//	.roles(RoleDto.fromEntity(utilisateur.getRole()))
+//				.roles(RoleDto.fromEntity(utilisateur.getRole().forEach( role ->  );
+//				.roles(utilisateur.getRole().stream().map(RoleDto::fromEntity).collect(Collectors.toList()))
 				.build();
 		
 	}
@@ -67,7 +70,7 @@ public class UtilisateurDto {
 		utilisateur.setEmail(utilisateurDto.getEmail());
 		utilisateur.setDateDeNaissance(utilisateurDto.getDateDeNaissance());
 		utilisateur.setEntreprise(EntrepriseDto.toEntity(utilisateurDto.getEntreprise()));
-	//	utilisateur.setRole(RoleDto.toEntity(utilisateurDto.getRoles()));
+//		utilisateur.setRole(utilisateurDto.getRoles().stream().map(RoleDto::toEntity).collect(Collectors.toList()));
 		return utilisateur ;
 	}
 	

@@ -26,8 +26,7 @@ public class RoleDto {
 		return RoleDto.builder()
 				.id(role.getId())
 				.roleName(role.getRoleName())
-				.utilisateur(UtilisateurDto.fromEntity(role.getUtilisateur()))
-				.idEntreprise(role.getIdEntreprise())
+				//.utilisateur(UtilisateurDto.fromEntity(role.getUtilisateur()))
 				.build();
 		
 	}
@@ -39,8 +38,7 @@ public class RoleDto {
 		Role role = new Role() ;
 		role.setId(roleDto.getId());
 		role.setRoleName(roleDto.getRoleName());
-		role.setUtilisateur(UtilisateurDto.toEntity(roleDto.getUtilisateur()));
-		role.setIdEntreprise(roleDto.getIdEntreprise());
+		//role.setUtilisateur(UtilisateurDto.toEntity(roleDto.getUtilisateur()));
 		return role ;
 	}
 	

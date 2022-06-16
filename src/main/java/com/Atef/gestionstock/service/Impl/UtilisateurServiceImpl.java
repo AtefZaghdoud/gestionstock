@@ -1,8 +1,12 @@
 package com.Atef.gestionstock.service.Impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.dto.ArticleDto;
+import com.Atef.gestionstock.model.Article;
+import com.Atef.gestionstock.model.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +53,23 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 		return utilisateurRepository.findById(id).map(UtilisateurDto::fromEntity).orElseThrow(() -> new EntityNotFoundException(
 				"Aucun utilisateur avec l'ID " + id + " n'ete trouve dans la BDD ", ErrorCodes.UTILISATEUR_NOT_FOUND));
 	}
-
+//
+//	@Override
+//	public UtilisateurDto findUtilisateurByEmail(String email){
+//		if (email==null){
+//			log.error("Utilisateur email is null ");
+//			return null;
+//		}
+//
+//		Optional<Utilisateur> utilisateur = utilisateurRepository.findUtilisateurByEmail(email);
+//
+//		UtilisateurDto dto = UtilisateurDto.fromEntity(utilisateur.get());
+//
+//		return Optional.of(dto).orElseThrow( () ->
+//				new EntityNotFoundException("Aucun utilisateur avec l'email'  " + email + "n'ete trouver dans la base de données " ,
+//						ErrorCodes.UTILISATEUR_NOT_FOUND)  ) ;
+//	}
+//
 	@Override
 	public List<UtilisateurDto> findAll() {
 		return utilisateurRepository.findAll().stream().map(UtilisateurDto::fromEntity).collect(Collectors.toList());
@@ -63,6 +83,15 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 		}
 		utilisateurRepository.deleteById(id);
 
+	}
+
+	public UtilisateurDto findUtilisateurByEmail(String email){
+		return utilisateurRepository.findUtilisateurByEmail(email)
+				.map(UtilisateurDto::fromEntity)
+				.orElseThrow(() -> new EntityNotFoundException(
+						"Aucun utilisateur avec l'email = " + email + "n'ete trouve dans la BDD ",
+						ErrorCodes.UTILISATEUR_NOT_FOUND
+				));
 	}
 
 }

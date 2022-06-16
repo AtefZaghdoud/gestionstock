@@ -1,6 +1,7 @@
 package com.Atef.gestionstock.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.Atef.gestionstock.model.Entreprise;
 
@@ -47,7 +48,7 @@ public static EntrepriseDto fromEntity(Entreprise entreprise) {
 				.photo(entreprise.getPhoto())
 				.steWeb(entreprise.getSteWeb())
 				.description(entreprise.getDescription())
-				//.utilisateurs(entreprise.getUtilisateurs())
+//				.utilisateurs(entreprise.getUtilisateurs().stream().map(UtilisateurDto::fromEntity).collect(Collectors.toList()) )
 				.build();
 		
 	}
@@ -66,7 +67,7 @@ public static EntrepriseDto fromEntity(Entreprise entreprise) {
 		entreprise.setNumTel(entrepriseDto.getNumTel());
 		entreprise.setPhoto(entrepriseDto.getPhoto());
 		entreprise.setSteWeb(entrepriseDto.getSteWeb());
-		//entreprise.setUtilisateurs(entrepriseDto.getUtilisateurs());
+//		entreprise.setUtilisateurs(entrepriseDto.getUtilisateurs().stream().map(UtilisateurDto::toEntity).collect(Collectors.toList()));
 		
 		return entreprise ;
 	}
