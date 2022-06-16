@@ -26,6 +26,9 @@ public class CommandeClient extends AbstractEntity {
 	
 	@Column(name="dateCommande")
 	private Instant dateCommande ;
+
+	@Column(name = "etatCommande")
+	private EtatCommande etatCommande;
 	
 	
 	@Column(name="identreprise")

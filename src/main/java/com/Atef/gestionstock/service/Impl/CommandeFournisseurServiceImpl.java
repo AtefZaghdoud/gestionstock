@@ -1,23 +1,22 @@
 package com.Atef.gestionstock.service.Impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.dto.*;
+import com.Atef.gestionstock.exception.InvalidOperationException;
+import com.Atef.gestionstock.model.*;
+import com.Atef.gestionstock.validator.ArticleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.Atef.gestionstock.dto.CommandeFournisseurDto;
-import com.Atef.gestionstock.dto.LigneCommandeFournisseurDto;
 import com.Atef.gestionstock.exception.EntityNotFoundException;
 import com.Atef.gestionstock.exception.ErrorCodes;
 import com.Atef.gestionstock.exception.InvalidEntityException;
-import com.Atef.gestionstock.model.Article;
-import com.Atef.gestionstock.model.CommandeFournisseur;
-import com.Atef.gestionstock.model.Fournisseur;
-import com.Atef.gestionstock.model.LigneCommandeFournisseur;
 import com.Atef.gestionstock.repository.ArticleRepository;
 import com.Atef.gestionstock.repository.CommandeFournisseurRepository;
 import com.Atef.gestionstock.repository.FournisseurRepository;
@@ -141,5 +140,6 @@ public class CommandeFournisseurServiceImpl implements CommandeFournisseurServic
 		commandeFournisseurRepository.deleteById(id);
 		
 	}
+
 
 }

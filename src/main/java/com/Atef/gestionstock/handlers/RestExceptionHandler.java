@@ -1,6 +1,7 @@
 package com.Atef.gestionstock.handlers;
 
 import com.Atef.gestionstock.exception.ErrorCodes;
+import com.Atef.gestionstock.exception.InvalidOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,8 +29,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ErrorDto>(errorDto, notFound);
 		
 	}
-	
-	
+
+	@ExceptionHandler(InvalidOperationException.class)
+	public ResponseEntity<ErrorDto> handleException (InvalidOperationException exception , WebRequest webRequest) {
+		final HttpStatus notFound = HttpStatus.BAD_REQUEST ;
+		final ErrorDto errorDto = ErrorDto.builder()
+				.codes(exception.getErrorCodes())
+				.httpCode(notFound.value())
+				.message(exception.getMessage())
+				.build();
+		return new ResponseEntity<ErrorDto>(errorDto, notFound);
+
+	}
+
+
 	@ExceptionHandler(InvalidEntityException.class)
 	public ResponseEntity<ErrorDto> handleException (InvalidEntityException exception , WebRequest webRequest){
 		final HttpStatus badRequest = HttpStatus.BAD_REQUEST;

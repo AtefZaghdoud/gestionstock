@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.Atef.gestionstock.model.Fournisseur;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 @Data
@@ -25,7 +26,8 @@ public class FournisseurDto {
 	private Integer idEntreprise;
 	
 	private String numTel;
-	
+
+	@JsonIgnore
 	private List<CommandeFournisseurDto> commandeFournisseurs;
 	
 public static FournisseurDto fromEntity(Fournisseur fournisseur) {
