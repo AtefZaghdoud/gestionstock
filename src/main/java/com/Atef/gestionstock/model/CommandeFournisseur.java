@@ -30,7 +30,9 @@ public class CommandeFournisseur extends AbstractEntity {
 	
 	@Column(name="identreprise")
 	private Integer idEntreprise;
-	
+
+	@Column(name = "etatCommande")
+	private EtatCommande etatCommande;
 	
 	@ManyToOne
 	@JoinColumn(name ="idfournisseur")

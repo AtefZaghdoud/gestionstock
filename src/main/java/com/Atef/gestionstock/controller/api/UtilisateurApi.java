@@ -1,5 +1,6 @@
 package com.Atef.gestionstock.controller.api;
 
+import com.Atef.gestionstock.dto.ChangerMotDePasseUtilisateurDto;
 import com.Atef.gestionstock.dto.ClientDto;
 import com.Atef.gestionstock.dto.UtilisateurDto;
 import io.swagger.annotations.Api;
@@ -45,5 +46,9 @@ public interface UtilisateurApi {
     @ApiOperation(value = "Supprimer un Utilisateur ", notes = " Cette methode permet de Supprimer un Utilisateur par son ID")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "L'Utilisateur a ete Supprimer "), })
     void delete(@PathVariable("idUtilisateur") Integer id);
+
+    @PostMapping (APP_ROOT + "/utilisateurs/changermotdepasse")
+    UtilisateurDto changerMotDePasse(ChangerMotDePasseUtilisateurDto dto);
+
 
 }

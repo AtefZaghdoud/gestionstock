@@ -12,10 +12,14 @@ public class VenteValidator {
 		
 		if (venteDto==null) {
 			errors.add("Veuillez renseigner le code du vente ");
+			errors.add("Veuillez renseigner la date du vente ");
 			return errors;
 		}
 		if (venteDto.getCode()==null) {
 			errors.add("Veuillez renseigner le code du vente ");
+		}
+		if (venteDto.getDateVente()==null) {
+			errors.add("Veuillez renseigner la date du vente ");
 		}
 
 		

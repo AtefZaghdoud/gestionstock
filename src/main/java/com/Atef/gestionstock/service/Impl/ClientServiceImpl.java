@@ -3,6 +3,9 @@ package com.Atef.gestionstock.service.Impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.exception.InvalidOperationException;
+import com.Atef.gestionstock.model.CommandeClient;
+import com.Atef.gestionstock.repository.CommandeClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientServiceImpl implements ClientService {
 
 	private ClientRepository clientRepository;
-
+	private CommandeClientRepository commandeClientRepository;
 	@Autowired
-	public ClientServiceImpl(ClientRepository clientRepository) {
+	public ClientServiceImpl(ClientRepository clientRepository, CommandeClientRepository commandeClientRepository) {
 		this.clientRepository = clientRepository;
+		this.commandeClientRepository = commandeClientRepository;
 	}
 
 	@Override
@@ -60,6 +64,10 @@ public class ClientServiceImpl implements ClientService {
 		if (id == null) {
 			log.error("Client id is null");
 			return;
+		}
+		List<CommandeClient> commandeClients = commandeClientRepository.findAllByClientId(id);
+		if (!commandeClients.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un client qui est déja des commandes client ",ErrorCodes.CLIENT_ALREADY_IN_USE);
 		}
 		clientRepository.deleteById(id);
 

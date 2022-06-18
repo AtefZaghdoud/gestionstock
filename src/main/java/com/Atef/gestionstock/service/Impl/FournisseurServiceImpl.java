@@ -3,6 +3,9 @@ package com.Atef.gestionstock.service.Impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.exception.InvalidOperationException;
+import com.Atef.gestionstock.model.CommandeFournisseur;
+import com.Atef.gestionstock.repository.CommandeFournisseurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +25,11 @@ public class FournisseurServiceImpl implements FournisseurService{
 
 	
 	private FournisseurRepository fournisseurRepository;
-
+	private CommandeFournisseurRepository commandeFournisseurRepository;
 	@Autowired
-	public FournisseurServiceImpl(FournisseurRepository fournisseurRepository) {
+	public FournisseurServiceImpl(FournisseurRepository fournisseurRepository, CommandeFournisseurRepository commandeFournisseurRepository) {
 		this.fournisseurRepository= fournisseurRepository;
+		this.commandeFournisseurRepository = commandeFournisseurRepository;
 	}
 	
 	
@@ -62,6 +66,10 @@ public class FournisseurServiceImpl implements FournisseurService{
 		if (id == null) {
 			log.error("Fournisseur id is null");
 			return;
+		}
+		List<CommandeFournisseur> commandeFournisseurs = commandeFournisseurRepository.findAllByFournisseurId(id);
+		if (!commandeFournisseurs.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un fournisseur qui est déja des commandes fournisseur ",ErrorCodes.FOURNISSEUR_ALREADY_IN_USE);
 		}
 		fournisseurRepository.deleteById(id);
 		

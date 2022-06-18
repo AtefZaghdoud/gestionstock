@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.Atef.gestionstock.dto.RoleDto;
 import com.Atef.gestionstock.dto.UtilisateurDto;
 import com.Atef.gestionstock.repository.RoleRepository;
+import com.Atef.gestionstock.repository.UtilisateurRepository;
 import com.Atef.gestionstock.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,14 @@ public class EntrepriseServiceImpl implements EntrepriseService{
 	private EntrepriseRepository entrepriseRepository;
 	private UtilisateurService utilisateurService;
 	private RoleRepository rolesRepository ;
+	private UtilisateurRepository utilisateurRepository;
 
 	@Autowired
-	public EntrepriseServiceImpl(EntrepriseRepository entrepriseRepository) {
+	public EntrepriseServiceImpl(EntrepriseRepository entrepriseRepository, UtilisateurService utilisateurService, RoleRepository rolesRepository, UtilisateurRepository utilisateurRepository) {
 		this.entrepriseRepository= entrepriseRepository;
+		this.utilisateurService = utilisateurService;
+		this.rolesRepository = rolesRepository;
+		this.utilisateurRepository = utilisateurRepository;
 	}
 	
 	@Override
@@ -59,7 +64,9 @@ public class EntrepriseServiceImpl implements EntrepriseService{
 	}
 
 	private UtilisateurDto fromEntreprise(EntrepriseDto dto){
-		return  UtilisateurDto.builder()
+
+		UtilisateurDto user = UtilisateurDto.builder()
+				.id(dto.getId())
 				.adresse(dto.getAdresse())
 				.nom(dto.getNom())
 				.prenom(dto.getCodeFiscal())
@@ -69,6 +76,9 @@ public class EntrepriseServiceImpl implements EntrepriseService{
 				.entreprise(dto)
 				.photo(dto.getPhoto())
 				.build();
+//		utilisateurService.save(user);
+		return  user;
+
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.Atef.gestionstock.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.Atef.gestionstock.dto.ChangerMotDePasseUtilisateurDto;
 import com.Atef.gestionstock.dto.UtilisateurDto;
 import com.Atef.gestionstock.model.Utilisateur;
 
@@ -17,5 +18,7 @@ public interface UtilisateurService {
 	List<UtilisateurDto> findAll();
 
 	void delete(Integer id);
+
+	UtilisateurDto changerMotDePasse(ChangerMotDePasseUtilisateurDto dto);
 
 }

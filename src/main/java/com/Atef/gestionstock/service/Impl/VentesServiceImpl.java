@@ -1,10 +1,16 @@
 package com.Atef.gestionstock.service.Impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.dto.ArticleDto;
+import com.Atef.gestionstock.dto.MvtStkDto;
+import com.Atef.gestionstock.exception.InvalidOperationException;
+import com.Atef.gestionstock.model.*;
+import com.Atef.gestionstock.service.MvtStkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -14,9 +20,6 @@ import com.Atef.gestionstock.dto.VenteDto;
 import com.Atef.gestionstock.exception.EntityNotFoundException;
 import com.Atef.gestionstock.exception.ErrorCodes;
 import com.Atef.gestionstock.exception.InvalidEntityException;
-import com.Atef.gestionstock.model.Article;
-import com.Atef.gestionstock.model.LigneVente;
-import com.Atef.gestionstock.model.Ventes;
 import com.Atef.gestionstock.repository.ArticleRepository;
 import com.Atef.gestionstock.repository.LigneVenteRepository;
 import com.Atef.gestionstock.repository.VenteRepository;
@@ -32,15 +35,16 @@ public class VentesServiceImpl implements  VentesService{
 	private ArticleRepository articleRepository;
 	private VenteRepository venteRepository;
 	private LigneVenteRepository ligneVenteRepository;
-	
+	private MvtStkService mvtStkService;
 	
 	@Autowired
 	public VentesServiceImpl(ArticleRepository articleRepository, VenteRepository venteRepository,
-			LigneVenteRepository ligneVenteRepository) {
+							 LigneVenteRepository ligneVenteRepository, MvtStkService mvtStkService) {
 		super();
 		this.articleRepository = articleRepository;
 		this.venteRepository = venteRepository;
 		this.ligneVenteRepository = ligneVenteRepository;
+		this.mvtStkService = mvtStkService;
 	}
 
 	@Override
@@ -70,6 +74,7 @@ public class VentesServiceImpl implements  VentesService{
 			LigneVente ligneVente = LigneVenteDto.toEntity(ligneVenteDto);
 			ligneVente.setVente(savedVentes);
 			ligneVenteRepository.save(ligneVente);
+			updateMvtStk(ligneVente);
 		});
 		
 		return VenteDto.fromEntity(savedVentes);
@@ -113,8 +118,26 @@ public class VentesServiceImpl implements  VentesService{
 			log.error("Vente ID is null");
 			return ;
 		}
+		List<LigneVente> ligneVentes = ligneVenteRepository.findAllByVenteId(id);
+		if (!ligneVentes.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un ligne vente qui est déja utilisé ",ErrorCodes.VENTE_ALREADY_IN_USE);
+		}
 		venteRepository.deleteById(id);
 		
 	}
+
+	private void updateMvtStk(LigneVente lig){
+			MvtStkDto mvtStkDto = MvtStkDto.builder()
+					.article(ArticleDto.fromEntity(lig.getArticle()))
+					.dateMvt(Instant.now())
+					.typeMvt(TypeMvtStk.SORTIE)
+					.sourceMvtStk(SourceMvtStk.VENTE)
+					.quantite(lig.getQuantite())
+					.idEntreprise(lig.getIdEntreprise())
+					.build();
+			mvtStkService.sortieStock(mvtStkDto);
+
+	}
+
 
 }

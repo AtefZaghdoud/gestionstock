@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.Atef.gestionstock.model.MvtStk;
+import com.Atef.gestionstock.model.SourceMvtStk;
 import com.Atef.gestionstock.model.TypeMvtStk;
 
 import lombok.Builder;
@@ -25,6 +26,8 @@ public class MvtStkDto {
 	private Integer idEntreprise;
 	
 	private TypeMvtStk typeMvt;
+
+	private SourceMvtStk sourceMvtStk;
 	
 	
 	public static MvtStkDto fromEntity(MvtStk mvtStk) {
@@ -39,6 +42,7 @@ public class MvtStkDto {
 				.dateMvt(mvtStk.getDateMvt())
 				.typeMvt(mvtStk.getTypeMvt())
 				.idEntreprise(mvtStk.getIdEntreprise())
+				.sourceMvtStk(mvtStk.getSourceMvtStk())
 				.build();
 		
 	}
@@ -52,6 +56,7 @@ public class MvtStkDto {
 		mvtStk.setDateMvt(mvtStkDto.getDateMvt());
 		mvtStk.setQuantite(mvtStkDto.getQuantite());
 		mvtStk.setTypeMvt(mvtStkDto.getTypeMvt());
+		mvtStk.setSourceMvtStk(mvtStkDto.getSourceMvtStk());
 		mvtStk.setIdEntreprise(mvtStkDto.getIdEntreprise());
 		mvtStk.setArticle(ArticleDto.toEntity(mvtStkDto.getArticle()));
 		return mvtStk ;

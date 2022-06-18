@@ -2,6 +2,9 @@ package com.Atef.gestionstock.controller.api;
 
 import java.util.List;
 
+import com.Atef.gestionstock.dto.LigneCommandeClientDto;
+import com.Atef.gestionstock.dto.LigneCommandeFournisseurDto;
+import com.Atef.gestionstock.dto.LigneVenteDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +55,38 @@ public interface ArticleApi {
 
 	})
 	List<ArticleDto> findAll();
+
+	@GetMapping(value = APP_ROOT + "/articles/historique/vente/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Renvoi le liste de historiques des ligne ventes articles ", notes = " Cette methode permet de chercher et renvoyer la liste historiques des articles qui existe dans la BDD", responseContainer = "List<ArticleDto>" )
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "La liste des article / une liste vide  ")
+
+	})
+	List<LigneVenteDto> findHistoriqueVentes(@PathVariable("idArticle") Integer idArticle);
+
+
+	@GetMapping(value = APP_ROOT + "/articles/historique/commandeclient/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Renvoi le liste historiques commandes clients des articles ", notes = " Cette methode permet de chercher et renvoyer la liste historique de commande client des articles qui existe dans la BDD", responseContainer = "List<ArticleDto>" )
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "La liste des article / une liste vide  ")
+
+	})
+	List<LigneCommandeClientDto> findHistoriqueCommandeClient(@PathVariable("idArticle")Integer idArticle);
+
+
+	@GetMapping(value = APP_ROOT + "/articles/historique/commandefournisseur/{idArticle}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Renvoi le liste historique commande fournisseur des articles ", notes = " Cette methode permet de chercher et renvoyer la liste historique commande fournisseur des articles qui existe dans la BDD", responseContainer = "List<ArticleDto>" )
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "La liste des article / une liste vide  ")
+
+	})
+	List<LigneCommandeFournisseurDto> findHistoriqueCommandeFournisseur(@PathVariable("idArticle")Integer idArticle);
+
+
+	@GetMapping(value = APP_ROOT + "/articles/filer/category/{idCategory}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Renvoi le liste des articles par category  ", notes = " Cette methode permet de chercher et renvoyer la liste des articles par category qui existe dans la BDD", responseContainer = "List<ArticleDto>" )
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "La liste des article / une liste vide  ")
+
+	})
+	List<ArticleDto> findAllArticleByIdCategory(@PathVariable("idCategory")Integer idCategory);
+
 
 	@DeleteMapping(value = APP_ROOT + "/articles/delete/{idArticle}")
 	@ApiOperation(value = "Supprimer un article ", notes = " Cette methode permet de Supprimer un article par son ID")

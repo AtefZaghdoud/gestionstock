@@ -38,7 +38,7 @@ public class SwaggerConfiguration {
 				.securitySchemes(Collections.singletonList(apiKey()))
 				.useDefaultResponseMessages(false)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.Atef.gestionstock"))
+				.apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.any())
 				.build();
 

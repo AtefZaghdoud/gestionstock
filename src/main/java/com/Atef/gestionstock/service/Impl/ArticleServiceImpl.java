@@ -4,6 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.Atef.gestionstock.dto.LigneCommandeClientDto;
+import com.Atef.gestionstock.dto.LigneCommandeFournisseurDto;
+import com.Atef.gestionstock.dto.LigneVenteDto;
+import com.Atef.gestionstock.exception.InvalidOperationException;
+import com.Atef.gestionstock.model.LigneCommandeClient;
+import com.Atef.gestionstock.model.LigneCommandeFournisseur;
+import com.Atef.gestionstock.model.LigneVente;
+import com.Atef.gestionstock.repository.LigneCommandeClientRepository;
+import com.Atef.gestionstock.repository.LigneCommandeFournisseurRepository;
+import com.Atef.gestionstock.repository.LigneVenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,12 +34,18 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleServiceImpl implements ArticleService{
 	
 	private ArticleRepository articleRepository;
-	
+	private LigneVenteRepository venteRepository;
+	private LigneCommandeFournisseurRepository commandeFournisseurRepository;
+	private LigneCommandeClientRepository commandeClientRepository;
+
 	@Autowired
-	public ArticleServiceImpl(ArticleRepository articleRepository) {
+	public ArticleServiceImpl(ArticleRepository articleRepository, LigneVenteRepository venteRepository, LigneCommandeFournisseurRepository commandeFournisseurRepository, LigneCommandeClientRepository commandeClientRepository) {
 		this.articleRepository = articleRepository;
+		this.venteRepository = venteRepository;
+		this.commandeFournisseurRepository = commandeFournisseurRepository;
+		this.commandeClientRepository = commandeClientRepository;
 	}
-	
+
 	@Override
 	public ArticleDto save(ArticleDto dto) {
 		List<String> errors = ArticleValidator.validate(dto);
@@ -88,10 +104,51 @@ public class ArticleServiceImpl implements ArticleService{
 	}
 
 	@Override
+	public List<LigneVenteDto> findHistoriqueVentes(Integer idArticle) {
+		return
+				venteRepository.findAllByArticleId(idArticle).stream()
+						.map(LigneVenteDto::fromEntity)
+						.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LigneCommandeClientDto> findHistoriqueCommandeClient(Integer idArticle) {
+		return commandeClientRepository.findAllByArticleId(idArticle).stream()
+				.map(LigneCommandeClientDto::fromEntity)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LigneCommandeFournisseurDto> findHistoriqueCommandeFournisseur(Integer idArticle) {
+		return commandeFournisseurRepository.findAllByArticleId(idArticle).stream()
+				.map(LigneCommandeFournisseurDto::fromEntity)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ArticleDto> findAllArticleByIdCategory(Integer idCategory) {
+		return articleRepository.findAllByCategoryId(idCategory).stream()
+				.map(ArticleDto::fromEntity)
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	public void delete(Integer id) {
 		if (id ==null) {
 			log.error("Article id is null");
 			return ;
+		}
+		List<LigneCommandeClient> ligneCommandeClients = commandeClientRepository.findAllByArticleId(id);
+		if (!ligneCommandeClients.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un article déja utilisé dans des commandes client ",ErrorCodes.ARTICLE_ALREADY_IN_USE);
+		}
+		List<LigneCommandeFournisseur> ligneCommandeFournisseur = commandeFournisseurRepository.findAllByArticleId(id);
+		if (!ligneCommandeFournisseur.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un article déja utilisé dans des commandes fournisseur ",ErrorCodes.ARTICLE_ALREADY_IN_USE);
+		}
+		List<LigneVente> ligneVentes = venteRepository.findAllByArticleId(id);
+		if (!ligneVentes.isEmpty()){
+			throw new InvalidOperationException("Impossible de supprimer un article déja utilisé dans des ventes ",ErrorCodes.ARTICLE_ALREADY_IN_USE);
 		}
 		articleRepository.deleteById(id);
 	}

@@ -1,6 +1,7 @@
 package com.Atef.gestionstock.controller;
 
 import com.Atef.gestionstock.controller.api.UtilisateurApi;
+import com.Atef.gestionstock.dto.ChangerMotDePasseUtilisateurDto;
 import com.Atef.gestionstock.dto.UtilisateurDto;
 import com.Atef.gestionstock.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,10 @@ public class UtilisateurController implements UtilisateurApi {
     @Override
     public void delete(Integer id) {
         utilisateurService.delete(id);
+    }
+
+    @Override
+    public UtilisateurDto changerMotDePasse(ChangerMotDePasseUtilisateurDto dto) {
+        return utilisateurService.changerMotDePasse(dto);
     }
 }

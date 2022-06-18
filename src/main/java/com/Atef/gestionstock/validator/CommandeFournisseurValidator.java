@@ -14,8 +14,9 @@ public class CommandeFournisseurValidator {
 		if (commandeFournisseurDto==null) {
 			errors.add("Veuillez renseigner le code de commande Fournisseur ");
 			errors.add("Veuillez renseigner le client correspond a la commande Fournisseur ");
-		//	errors.add("Veuillez renseigner le code de commande Fournisseur ");
-			errors.add("Veuillez renseigner le ligne de commande correspond a la commande Fournisseur");
+//			errors.add("Veuillez renseigner l'etat de la commande Fournisseur ");
+//			errors.add("Veuillez renseigner le code de commande Fournisseur ");
+//			errors.add("Veuillez renseigner le ligne de commande correspond a la commande Fournisseur");
 
 			return errors;
 
@@ -23,15 +24,18 @@ public class CommandeFournisseurValidator {
 		if (!StringUtils.hasLength(commandeFournisseurDto.getCode())) {
 			errors.add("Veuillez renseigner le code de commande Fournisseur ");
 		}
-		if (commandeFournisseurDto.getFournisseur()==null) {
+		if (commandeFournisseurDto.getFournisseur()==null || commandeFournisseurDto.getFournisseur().getId()==null) {
 			errors.add("Veuillez renseigner le client correspond a la commande Fournisseur ");
 		}
+//		if (!StringUtils.hasLength(commandeFournisseurDto.getEtatCommande().toString())) {
+//			errors.add("Veuillez renseigner l'etat de la commande Fournisseur ");
+//		}
 		/*if (commandeFournisseurDto.getDateCommande()==null) {
 			errors.add("Veuillez renseigner le code de commande Fournisseur ");
 		}*/
-		if (commandeFournisseurDto.getLigneCommandeFournisseurs()==null) {
-			errors.add("Veuillez renseigner le ligne de commande correspond a la commande Fournisseur ");
-		}
+//		if (commandeFournisseurDto.getLigneCommandeFournisseurs()==null) {
+//			errors.add("Veuillez renseigner le ligne de commande correspond a la commande Fournisseur ");
+//		}
 		return errors;
 	}
 

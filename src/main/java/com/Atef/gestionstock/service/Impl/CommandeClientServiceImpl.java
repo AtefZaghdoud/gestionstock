@@ -1,22 +1,21 @@
 package com.Atef.gestionstock.service.Impl;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.Atef.gestionstock.dto.ArticleDto;
-import com.Atef.gestionstock.dto.ClientDto;
+import com.Atef.gestionstock.dto.*;
 import com.Atef.gestionstock.exception.InvalidOperationException;
 import com.Atef.gestionstock.model.*;
+import com.Atef.gestionstock.service.MvtStkService;
 import com.Atef.gestionstock.validator.ArticleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.Atef.gestionstock.dto.CommandeClientDto;
-import com.Atef.gestionstock.dto.LigneCommandeClientDto;
 import com.Atef.gestionstock.exception.EntityNotFoundException;
 import com.Atef.gestionstock.exception.ErrorCodes;
 import com.Atef.gestionstock.exception.InvalidEntityException;
@@ -37,17 +36,18 @@ public class CommandeClientServiceImpl implements CommandeClientService {
 	private LigneCommandeClientRepository ligneCommandeClientRepository;
 	private ClientRepository clientRepository;
 	private ArticleRepository articleRepository;
-	
+	private MvtStkService mvtStkService;
 	
 	
 	@Autowired
 	public CommandeClientServiceImpl(CommandeClientRepository commandeClientRepository,
-			ClientRepository clientRepository, ArticleRepository articleRepository ,LigneCommandeClientRepository ligneCommandeClientRepository) {
+			ClientRepository clientRepository, ArticleRepository articleRepository ,LigneCommandeClientRepository ligneCommandeClientRepository, MvtStkService mvtStkService ) {
 		super();
 		this.commandeClientRepository = commandeClientRepository;
 		this.clientRepository = clientRepository;
 		this.articleRepository = articleRepository;
 		this.ligneCommandeClientRepository=ligneCommandeClientRepository;
+		this.mvtStkService=mvtStkService;
 	}
 
 	@Override
@@ -146,6 +146,10 @@ public class CommandeClientServiceImpl implements CommandeClientService {
 			log.error("commande client ID is null");
 			return ;
 		}
+		List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandeClientId(id);
+		if (!ligneCommandeClients.isEmpty()) {
+			throw new InvalidOperationException("Impossible de supprimer une commande client qui est déja utilisé  ",ErrorCodes.COMMANDE_CLIENT_ALREADY_IN_USE);
+		}
 		commandeClientRepository.deleteById(id);
 		
 	}
@@ -209,9 +213,11 @@ public class CommandeClientServiceImpl implements CommandeClientService {
 
 		commandeClient.setEtatCommande(etatCommande);
 
-		return CommandeClientDto.fromEntity(
-				commandeClientRepository.save(CommandeClientDto.toEntity(commandeClient)
-		));
+		CommandeClient savedCmdClt = commandeClientRepository.save(CommandeClientDto.toEntity(commandeClient));
+		if (commandeClient.isCommandeLivree()) {
+			updateMvtStk(idCommande);
+		}
+		return CommandeClientDto.fromEntity(savedCmdClt);
 
 
 	}
@@ -325,5 +331,22 @@ public class CommandeClientServiceImpl implements CommandeClientService {
 		return ligneCommandeClientRepository.findAllByCommandeClientId(idCommande).stream()
 				.map(LigneCommandeClientDto::fromEntity)
 				.collect(Collectors.toList()) ;
+	}
+
+	private void updateMvtStk(Integer idCommande){
+		List<LigneCommandeClient> ligneCommandeClients = ligneCommandeClientRepository.findAllByCommandeClientId(idCommande);
+		ligneCommandeClients.forEach( lig -> {
+			MvtStkDto mvtStkDto = MvtStkDto.builder()
+					.article(ArticleDto.fromEntity(lig.getArticle()))
+					.dateMvt(Instant.now())
+					.typeMvt(TypeMvtStk.SORTIE)
+					.sourceMvtStk(SourceMvtStk.COMMANDE_CLIENT)
+					.quantite(lig.getQuantite())
+					.idEntreprise(lig.getIdEntreprise())
+					.build();
+			mvtStkService.sortieStock(mvtStkDto);
+
+		});
+
 	}
 }
